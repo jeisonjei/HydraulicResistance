@@ -14,7 +14,8 @@ namespace HydraulicResistance.Helpers
         Rectangular,
         Round
     }
-    internal class Flow
+
+    public class Flow
     {
         private readonly Fluid _fluid;
         private readonly double _flowRate;
@@ -22,17 +23,18 @@ namespace HydraulicResistance.Helpers
         private readonly double _height;
         private readonly double _diam;
         private readonly Shape _shape;
+        public double Δ { get; set; }
 
-        public Flow(Fluid fluid,double flowRate, double diam)
+        public Flow(FluidList fluid,double flowRate, double diam)
         {
-            _fluid = fluid;
+            _fluid = new Fluid(fluid);
             _flowRate = flowRate;
             _diam = diam;
             _shape = Shape.Round;
         }
-        public Flow(Fluid fluid, double flowRate, double width,double height)
+        public Flow(FluidList fluid, double flowRate, double width,double height)
         {
-            _fluid = fluid;
+            _fluid = new Fluid(fluid);
             _flowRate = flowRate;
             _width = width;
             _height = height;
@@ -57,28 +59,70 @@ namespace HydraulicResistance.Helpers
             var kinematicViscosity=_fluid.DynamicViscosity/_fluid.Density; 
             return kinematicViscosity;
         }
-        public double GetTubeArea()
+        public Area GetTubeArea()
         {
-            double area = default;
+            var area = new Area(default,AreaUnit.SquareMillimeter);
             if (_shape==Shape.Round)
             {
-                area = Math.PI * Math.Pow(_diam / 2000d, 2d);
+                var diam=new Length(_diam,LengthUnit.Millimeter);
+                area = Math.PI * (diam/2).Pow(2);
             }
             else if (_shape==Shape.Rectangular)
             {
-                area = _width / 1000d * (_height / 1000d);
+                var width=new Length(_width,LengthUnit.Millimeter);
+                var height=new Length(_height,LengthUnit.Millimeter);
+                area = width * height;
             }
             else
             {
                 return default; 
             }
-            return area;
+            return area.ToUnit(AreaUnit.SquareMeter);
         }
-        public double GetFlowVelocity()
+        public Length GetHidraulicDiameter(){
+            Length hidraulicDiam=new Length(default,LengthUnit.Millimeter);
+            if (_shape==Shape.Round)
+            {
+                var diam = new Length(_diam, LengthUnit.Millimeter);
+                hidraulicDiam = diam;
+            }
+            else if (_shape==Shape.Rectangular)
+            {
+                var width=new Length(_width,LengthUnit.Millimeter);
+                var height=new Length(_height,LengthUnit.Millimeter);
+                hidraulicDiam=(2*width*height)/(width+height);
+            }
+            return hidraulicDiam;
+        }
+        public Speed GetFlowVelocity()
         {
-            double area=GetTubeArea();
-            double velocity = _flowRate / (3600*area);
-            return velocity;
+            var area = GetTubeArea();
+            var flow=new VolumeFlow(_flowRate,VolumeFlowUnit.CubicMeterPerHour);
+            var velocity = flow / area;
+            return velocity.ToUnit(SpeedUnit.MeterPerSecond);
+        }
+        public double GetReinoldsNumber(double tempCels){
+            var velocity = GetFlowVelocity();
+            var hidraulicDiam = GetHidraulicDiameter();
+            var kinematicViscosity=GetFluidKinematicViscosity(tempCels);
+            var re=(velocity*hidraulicDiam.ToUnit(LengthUnit.Meter)/kinematicViscosity);
+            return re;
+        }
+        public double GetLambda(double tempCels,double equivalentRoughness){
+            var re=GetReinoldsNumber(tempCels);
+            var hidraulicDiam = GetHidraulicDiameter();
+            var er=new Length(equivalentRoughness,LengthUnit.Millimeter);
+            var lambda=0.11*Math.Pow(((er/hidraulicDiam)+(0.68/re)),0.25);
+            return lambda;
+        }
+        public Pressure GetPressureLossPerMeter(double tempCels,double equivalentRoughness){
+            var lambda=GetLambda(tempCels,equivalentRoughness);
+            var density=GetFluidDensity(tempCels);
+            var velocity = GetFlowVelocity();
+            var diam=GetHidraulicDiameter();
+            var length=new Length(1,LengthUnit.Meter);
+            var pressureLossPerMeter=length*lambda*(density*velocity.Pow(2))/(2*diam.ToUnit(LengthUnit.Meter));
+            return pressureLossPerMeter;
         }
 
     }
