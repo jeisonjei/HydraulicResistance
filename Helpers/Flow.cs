@@ -101,6 +101,13 @@ namespace HydraulicResistance.Helpers
 			var velocity = flow / area;
 			return velocity.ToUnit(SpeedUnit.MeterPerSecond);
 		}
+		public static Speed GetFlowVelocity(double flowRateCubicMeterPerHour,double areaSquareMeter)
+		{
+			var area = new Area(areaSquareMeter,AreaUnit.SquareMeter);
+			var flow=new VolumeFlow(flowRateCubicMeterPerHour,VolumeFlowUnit.CubicMeterPerHour);
+			var velocity = flow / area;
+			return velocity.ToUnit(SpeedUnit.MeterPerSecond);
+		}
 		public double GetReinoldsNumber(double tempCels){
 			var velocity = GetFlowVelocity();
 			var hidraulicDiam = GetHidraulicDiameter();
