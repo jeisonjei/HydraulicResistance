@@ -54,27 +54,6 @@ namespace HydraulicResistance.ElementsOfResistance
             var b=_difsB(angleDegree,lCherta);
             var c=_difsC(re);
             var dzetaN=_difsDzetaN(angleDegree,a,b,c,n,lCherta,re);
-            Console.WriteLine($"=== {nameof(lengthDiffuserMillimeter)}:{lengthDiffuserMillimeter}");
-            Console.WriteLine($"=== {nameof(length)}:{length}");
-            Console.WriteLine($"=== {nameof(diamSmall)}:{diamSmall}");
-            Console.WriteLine($"=== {nameof(diamBig)}:{diamBig}");
-            Console.WriteLine($"=== {nameof(xCherta)}:{xCherta}");
-            Console.WriteLine($"=== {nameof(lCherta)}:{lCherta}");
-            Console.WriteLine($"=== {nameof(xTilda)}:{xTilda}");
-            Console.WriteLine($"=== {nameof(areaSmall)}:{areaSmall}");
-            Console.WriteLine($"=== {nameof(areaBig)}:{areaBig}");
-            Console.WriteLine($"=== {nameof(flow)}:{flow}");
-            Console.WriteLine($"=== {nameof(lambda)}:{lambda}");
-            Console.WriteLine($"=== {nameof(re)}:{re}");
-            Console.WriteLine($"=== {nameof(n)}:{n}");
-            Console.WriteLine($"=== {nameof(dzetaTr)}:{dzetaTr}");
-            Console.WriteLine($"=== {nameof(dzetaTrHatch)}:{dzetaTrHatch}");
-            Console.WriteLine($"=== {nameof(phi)}:{phi}");
-            Console.WriteLine($"=== {nameof(dzetaR)}:{dzetaR}");
-            Console.WriteLine($"=== {nameof(a)}:{a}");
-            Console.WriteLine($"=== {nameof(b)}:{b}");
-            Console.WriteLine($"=== {nameof(c)}:{c}");
-            Console.WriteLine($"=== {nameof(dzetaN)}:{dzetaN}");
             ksi=_getDiffuserConicalResistance(dzetaTRHatch:dzetaTrHatch,
                                                 dzetaR:dzetaR,
                                                 dzetaN:dzetaN);
