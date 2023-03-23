@@ -6,121 +6,171 @@ using EngineeringUnits.Units;
 
 public class TeeExhaust
 {
-    public static double GetTeeExhaustOnPassAllRoundResistance(FluidList fluid,
-                                                double flowRateCollectorPipeCubicMetersPerHour,
-                                                double flowRateTurnPipeCubicMetersPerHour,
-                                                double diamCollectorPipeMillimeters,
-                                                double diamTurnPipeMillimeters,
-                                                double diamPassPipeMillimeters)
+    public static double GetTeeExhaustOnPassAllRoundResistance(
+                                                double flowRateCollectorPipeCubicMeterPerHour,
+                                                double flowRateTurnPipeCubicMeterPerHour,
+                                                double diamCollectorPipeMillimeter,
+                                                double diamTurnPipeMillimeter,
+                                                double diamPassPipeMillimeter,
+                                                double angleDegree)
     {
         double ksi = default;
-        var areaCollectorPipeSquareMeter =Mathematics.GetAreaCircle(diamCollectorPipeMillimeters).As(AreaUnit.SquareMeter);
-        var areaTurnPipeSquareMeter =Mathematics.GetAreaCircle(diamTurnPipeMillimeters).As(AreaUnit.SquareMeter);
-        var areaPassPipeSquareMeter =Mathematics.GetAreaCircle(diamPassPipeMillimeters).As(AreaUnit.SquareMeter);
+        var areaCollectorPipeSquareMeter =Mathematics.GetAreaCircle(diamCollectorPipeMillimeter).As(AreaUnit.SquareMeter);
+        var areaTurnPipeSquareMeter =Mathematics.GetAreaCircle(diamTurnPipeMillimeter).As(AreaUnit.SquareMeter);
+        var areaPassPipeSquareMeter =Mathematics.GetAreaCircle(diamPassPipeMillimeter).As(AreaUnit.SquareMeter);
+        ksi = _getTeeExhaustOnPassResistance(areaCollectorPipeSquareMeter:areaCollectorPipeSquareMeter,
+                                            areaTurnPipeSquareMeter: areaTurnPipeSquareMeter,
+                                            flowRateCollectorPipeCubicMeterPerHour: flowRateCollectorPipeCubicMeterPerHour,
+                                            flowRateTurnPipeCubicMeterPerHour: flowRateTurnPipeCubicMeterPerHour,
+                                            angleDegree: angleDegree);
         return ksi;
     }
-    public static double GetTeeExhaustOnPassAllRectangularResistance(FluidList fluid,
-                                                                    double flowRateCollectorPipeCubicMetersPerHour,
-                                                                    double flowRateTurnPipeCubicMetersPerHour,
-                                                                    double widthCollectorPipeMillimeters,
-                                                                    double heightCollectorPipeMillimeters,
-                                                                    double widthTurnPipeMillimeters,
-                                                                    double heightTurnPipeMillimeters,
-                                                                    double widthPassPipeMillimeters,
-                                                                    double heightPassPipeMillimeters)
+    public static double GetTeeExhaustOnPassAllRectangularResistance(
+                                                                    double flowRateCollectorPipeCubicMeterPerHour,
+                                                                    double flowRateTurnPipeCubicMeterPerHour,
+                                                                    double widthCollectorPipeMillimeter,
+                                                                    double heightCollectorPipeMillimeter,
+                                                                    double widthTurnPipeMillimeter,
+                                                                    double heightTurnPipeMillimeter,
+                                                                    double widthPassPipeMillimeter,
+                                                                    double heightPassPipeMillimeter,
+                                                                    double angleDegree)
     {
         double ksi = default;
-        var areaCollectorPipeSquareMeter =Mathematics.GetAreaRectangle(widthCollectorPipeMillimeters,heightCollectorPipeMillimeters).As(AreaUnit.SquareMeter);
-        var areaTurnPipeSquareMeter =Mathematics.GetAreaRectangle(widthTurnPipeMillimeters,heightTurnPipeMillimeters).As(AreaUnit.SquareMeter);
-        var areaPassPipeSquareMeter =Mathematics.GetAreaRectangle(widthPassPipeMillimeters,heightPassPipeMillimeters);
+        var areaCollectorPipeSquareMeter =Mathematics.GetAreaRectangle(widthCollectorPipeMillimeter,heightCollectorPipeMillimeter).As(AreaUnit.SquareMeter);
+        var areaTurnPipeSquareMeter =Mathematics.GetAreaRectangle(widthTurnPipeMillimeter,heightTurnPipeMillimeter).As(AreaUnit.SquareMeter);
+        var areaPassPipeSquareMeter =Mathematics.GetAreaRectangle(widthPassPipeMillimeter,heightPassPipeMillimeter);
+                ksi = _getTeeExhaustOnPassResistance(areaCollectorPipeSquareMeter:areaCollectorPipeSquareMeter,
+                                            areaTurnPipeSquareMeter: areaTurnPipeSquareMeter,
+                                            flowRateCollectorPipeCubicMeterPerHour: flowRateCollectorPipeCubicMeterPerHour,
+                                            flowRateTurnPipeCubicMeterPerHour: flowRateTurnPipeCubicMeterPerHour,
+                                            angleDegree: angleDegree);
+        
+        return ksi;
+    }
+    public static double GetTeeExhaustOnPassAllRectangularButTurnRoundResistance(
+                                                                                double flowRateCollectorPipeCubicMeterPerHour,
+                                                                                double flowRateTurnPipeCubicMeterPerHour,
+                                                                                double widthCollectorPipeMillimeter,
+                                                                                double heightCollectorPipeMillimeter,
+                                                                                double diamTurnPipeMillimeter,
+                                                                                double widthPassPipeMillimeter,
+                                                                                double heightPassPipeMillimeter,
+                                                                                double angleDegree)
+    {
+        double ksi = default;
+        var areaCollectorPipeSquareMeter =Mathematics.GetAreaRectangle(widthCollectorPipeMillimeter,heightCollectorPipeMillimeter).As(AreaUnit.SquareMeter);
+        var areaTurnPipeSquareMeter =Mathematics.GetAreaCircle(diamTurnPipeMillimeter).As(AreaUnit.SquareMeter);
+        var areaPassPipeSquareMeter =Mathematics.GetAreaRectangle(widthPassPipeMillimeter,heightPassPipeMillimeter).As(AreaUnit.SquareMeter);
+        ksi = _getTeeExhaustOnPassResistance(areaCollectorPipeSquareMeter:areaCollectorPipeSquareMeter,
+                                            areaTurnPipeSquareMeter: areaTurnPipeSquareMeter,
+                                            flowRateCollectorPipeCubicMeterPerHour: flowRateCollectorPipeCubicMeterPerHour,
+                                            flowRateTurnPipeCubicMeterPerHour: flowRateTurnPipeCubicMeterPerHour,
+                                            angleDegree: angleDegree);
 
         return ksi;
     }
-    public static double GetTeeExhaustOnPassAllRectangularButTurnRoundResistance(FluidList fluid,
-                                                                                double flowRateCollectorPipeCubicMetersPerHour,
-                                                                                double flowRateTurnPipeCubicMetersPerHour,
-                                                                                double widthCollectorPipeMillimeters,
-                                                                                double heightCollectorPipeMillimeters,
-                                                                                double diamTurnPipeMillimeters,
-                                                                                double widthPassPipeMillimeters,
-                                                                                double heightPassPipeMillimeters)
+    public static double GetTeeExhaustOnTurnAllRoundResistance(
+                                                    double flowRateCollectorPipeCubicMeterPerHour,
+                                                    double flowRateTurnPipeCubicMeterPerHour,
+                                                    double diamCollectorPipeMillimeter,
+                                                    double diamTurnPipeMillimeter,
+                                                    double diamPassPipeMillimeter,
+                                                    double angleDegree)
     {
         double ksi = default;
-        var areaCollectorPipeSquareMeter =Mathematics.GetAreaRectangle(widthCollectorPipeMillimeters,heightCollectorPipeMillimeters).As(AreaUnit.SquareMeter);
-        var areaTurnPipeSquareMeter =Mathematics.GetAreaCircle(diamTurnPipeMillimeters).As(AreaUnit.SquareMeter);
-        var areaPassPipeSquareMeter =Mathematics.GetAreaRectangle(widthPassPipeMillimeters,heightPassPipeMillimeters).As(AreaUnit.SquareMeter);
+        var areaCollectorPipeSquareMeter =Mathematics.GetAreaCircle(diamCollectorPipeMillimeter).As(AreaUnit.SquareMeter);
+        var areaTurnPipeSquareMeter =Mathematics.GetAreaCircle(diamTurnPipeMillimeter).As(AreaUnit.SquareMeter);
+        var areaPassPipeSquareMeter =Mathematics.GetAreaCircle(diamPassPipeMillimeter).As(AreaUnit.SquareMeter);
+        var velocityCollectorPipeMeterPerSecond =Flow.GetFlowVelocity(flowRateCollectorPipeCubicMeterPerHour,areaCollectorPipeSquareMeter).As(SpeedUnit.MeterPerSecond);
+        var velocityTurnPipeMeterPerSecond =Flow.GetFlowVelocity(flowRateTurnPipeCubicMeterPerHour,areaTurnPipeSquareMeter).As(SpeedUnit.MeterPerSecond);
+        double flowRatePassPipeCubicMeterPerHour = flowRateCollectorPipeCubicMeterPerHour - flowRateTurnPipeCubicMeterPerHour;
+        var velocityPassPipeMeterPerSecond =Flow.GetFlowVelocity(flowRatePassPipeCubicMeterPerHour,areaPassPipeSquareMeter).As(SpeedUnit.MeterPerSecond);
+        ksi = _getTeeExhaustOnTurnResistance(velocityCollectorPipeMeterPerSecond: velocityCollectorPipeMeterPerSecond,
+                                            velocityTurnPipeMeterPerSecond: velocityTurnPipeMeterPerSecond,
+                                            velocityPassPipeMeterPerSecond: velocityPassPipeMeterPerSecond,
+                                            areaCollectorPipeSquareMeter: areaCollectorPipeSquareMeter,
+                                            areaTurnPipeSquareMeter: areaTurnPipeSquareMeter,
+                                            areaPassPipeSquareMeter: areaPassPipeSquareMeter,
+                                            angleDegree: angleDegree);
+        return ksi;
+    }
+    public static double GetTeeExhaustOnTurnAllRectangularResistance(
+                                                                    double flowRateCollectorPipeCubicMeterPerHour,
+                                                                    double flowRateTurnPipeCubicMeterPerHour,
+                                                                    double widthCollectorPipeMillimeter,
+                                                                    double heightCollectorPipeMillimeter,
+                                                                    double widthTurnPipeMillimeter,
+                                                                    double heightTurnPipeMillimeter,
+                                                                    double widthPassPipeMillimeter,
+                                                                    double heightPassPipeMillimeter,
+                                                                    double angleDegree)
+    {
+        double ksi = default;
+        var areaCollectorPipeSquareMeter =Mathematics.GetAreaRectangle(widthCollectorPipeMillimeter,heightCollectorPipeMillimeter).As(AreaUnit.SquareMeter);
+        var areaTurnPipeSquareMeter =Mathematics.GetAreaRectangle(widthTurnPipeMillimeter,heightTurnPipeMillimeter).As(AreaUnit.SquareMeter);
+        var areaPassPipeSquareMeter =Mathematics.GetAreaRectangle(widthPassPipeMillimeter,heightPassPipeMillimeter).As(AreaUnit.SquareMeter);
+        var velocityCollectorPipeMeterPerSecond =Flow.GetFlowVelocity(flowRateCollectorPipeCubicMeterPerHour,areaCollectorPipeSquareMeter).As(SpeedUnit.MeterPerSecond);
+        var velocityTurnPipeMeterPerSecond =Flow.GetFlowVelocity(flowRateTurnPipeCubicMeterPerHour,areaTurnPipeSquareMeter).As(SpeedUnit.MeterPerSecond);
+        double flowRatePassPipeCubicMeterPerHour = flowRateCollectorPipeCubicMeterPerHour - flowRateTurnPipeCubicMeterPerHour;
+        var velocityPassPipeMeterPerSecond =Flow.GetFlowVelocity(flowRatePassPipeCubicMeterPerHour,areaPassPipeSquareMeter).As(SpeedUnit.MeterPerSecond);
+        ksi = _getTeeExhaustOnTurnResistance(velocityCollectorPipeMeterPerSecond: velocityCollectorPipeMeterPerSecond,
+                                            velocityTurnPipeMeterPerSecond: velocityTurnPipeMeterPerSecond,
+                                            velocityPassPipeMeterPerSecond: velocityPassPipeMeterPerSecond,
+                                            areaCollectorPipeSquareMeter: areaCollectorPipeSquareMeter,
+                                            areaTurnPipeSquareMeter: areaTurnPipeSquareMeter,
+                                            areaPassPipeSquareMeter: areaPassPipeSquareMeter,
+                                            angleDegree: angleDegree);
 
         return ksi;
     }
-    public static double GetTeeExhaustOnTurnAllRoundResistance(FluidList fluid,
-                                                    double flowRateCollectorPipeCubicMetersPerHour,
-                                                    double flowRateTurnPipeCubicMetersPerHour,
-                                                    double diamCollectorPipeMillimeters,
-                                                    double diamTurnPipeMillimeters,
-                                                    double diamPassPipeMillimeters,
-                                                    double angleDegrees)
+    public static double GetTeeExhaustOnTurnAllRectangularButTurnRoundResistance(
+                                                                                double flowRateCollectorPipeCubicMeterPerHour,
+                                                                                double flowRateTurnPipeCubicMeterPerHour,
+                                                                                double widthCollectorPipeMillimeter,
+                                                                                double heightCollectorPipeMillimeter,
+                                                                                double diamTurnPipeMillimeter,
+                                                                                double widthPassPipeMillimeter,
+                                                                                double heightPassPipeMillimeter,
+                                                                                double angleDegree)
     {
         double ksi = default;
-        var areaCollectorPipeSquareMeter =Mathematics.GetAreaCircle(diamCollectorPipeMillimeters).As(AreaUnit.SquareMeter);
-        var areaTurnPipeSquareMeter =Mathematics.GetAreaCircle(diamTurnPipeMillimeters).As(AreaUnit.SquareMeter);
-        var areaPassPipeSquareMeter =Mathematics.GetAreaCircle(diamPassPipeMillimeters).As(AreaUnit.SquareMeter);
-
-        return ksi;
-    }
-    public static double GetTeeExhaustOnTurnAllRectangularResistance(FluidList fluid,
-                                                                    double flowRateCollectorPipeCubicMetersPerHour,
-                                                                    double flowRateTurnPipeCubicMetersPerHour,
-                                                                    double widthCollectorPipeMillimeters,
-                                                                    double heightCollectorPipeMillimeters,
-                                                                    double widthTurnPipeMillimeters,
-                                                                    double heightTurnPipeMillimeters,
-                                                                    double widthPassPipeMillimeters,
-                                                                    double heightPassPipeMillimeters,
-                                                                    double angleDegrees)
-    {
-        double ksi = default;
-        var areaCollectorPipeSquareMeter =Mathematics.GetAreaRectangle(widthCollectorPipeMillimeters,heightCollectorPipeMillimeters).As(AreaUnit.SquareMeter);
-        var areaTurnPipeSquareMeter =Mathematics.GetAreaRectangle(widthTurnPipeMillimeters,heightTurnPipeMillimeters).As(AreaUnit.SquareMeter);
-        var areaPassPipeSquareMeter =Mathematics.GetAreaRectangle(widthPassPipeMillimeters,heightPassPipeMillimeters).As(AreaUnit.SquareMeter);
-
-        return ksi;
-    }
-    public static double GetTeeExhaustOnTurnAllRectangularButTurnRoundResistance(FluidList fluid,
-                                                                                double flowRateCollectorPipeCubicMetersPerHour,
-                                                                                double flowRateTurnPipeCubicMetersPerHour,
-                                                                                double widthCollectorPipeMillimeters,
-                                                                                double heightCollectorPipeMillimeters,
-                                                                                double diamTurnPipeMillimeters,
-                                                                                double widthPassPipeMillimeters,
-                                                                                double heightPassPipeMillimeters,
-                                                                                double angleDegrees)
-    {
-        double ksi = default;
-        var areaCollectorPipeSquareMeter =Mathematics.GetAreaRectangle(widthCollectorPipeMillimeters,heightCollectorPipeMillimeters).As(AreaUnit.SquareMeter);
-        var areaTurnPipeSquareMeter =Mathematics.GetAreaCircle(diamTurnPipeMillimeters).As(AreaUnit.SquareMeter);
-        var areaPassPipeSquareMeter =Mathematics.GetAreaRectangle(widthPassPipeMillimeters,heightPassPipeMillimeters).As(AreaUnit.SquareMeter);
+        var areaCollectorPipeSquareMeter =Mathematics.GetAreaRectangle(widthCollectorPipeMillimeter,heightCollectorPipeMillimeter).As(AreaUnit.SquareMeter);
+        var areaTurnPipeSquareMeter =Mathematics.GetAreaCircle(diamTurnPipeMillimeter).As(AreaUnit.SquareMeter);
+        var areaPassPipeSquareMeter =Mathematics.GetAreaRectangle(widthPassPipeMillimeter,heightPassPipeMillimeter).As(AreaUnit.SquareMeter);
+        var velocityCollectorPipeMeterPerSecond =Flow.GetFlowVelocity(flowRateCollectorPipeCubicMeterPerHour,areaCollectorPipeSquareMeter).As(SpeedUnit.MeterPerSecond);
+        var velocityTurnPipeMeterPerSecond =Flow.GetFlowVelocity(flowRateTurnPipeCubicMeterPerHour,areaTurnPipeSquareMeter).As(SpeedUnit.MeterPerSecond);
+        double flowRatePassPipeCubicMeterPerHour = flowRateCollectorPipeCubicMeterPerHour - flowRateTurnPipeCubicMeterPerHour;
+        var velocityPassPipeMeterPerSecond =Flow.GetFlowVelocity(flowRatePassPipeCubicMeterPerHour,areaPassPipeSquareMeter).As(SpeedUnit.MeterPerSecond);
+        ksi = _getTeeExhaustOnTurnResistance(velocityCollectorPipeMeterPerSecond: velocityCollectorPipeMeterPerSecond,
+                                            velocityTurnPipeMeterPerSecond: velocityTurnPipeMeterPerSecond,
+                                            velocityPassPipeMeterPerSecond: velocityPassPipeMeterPerSecond,
+                                            areaCollectorPipeSquareMeter: areaCollectorPipeSquareMeter,
+                                            areaTurnPipeSquareMeter: areaTurnPipeSquareMeter,
+                                            areaPassPipeSquareMeter: areaPassPipeSquareMeter,
+                                            angleDegree: angleDegree);
 
         return ksi;
     }
     private static double _getTeeExhaustOnPassResistance(
-                                                        double areaCollectorPipeSquareMeters /* площадь сечения сборного воздуховода */,
-                                                        double areaTurnPipeSquareMeters /* площадь сечения бокового ответвления */,
+                                                        double areaCollectorPipeSquareMeter /* площадь сечения сборного воздуховода */,
+                                                        double areaTurnPipeSquareMeter /* площадь сечения бокового ответвления */,
                                                         double flowRateCollectorPipeCubicMeterPerHour, /* расход в сборном участке */
                                                         double flowRateTurnPipeCubicMeterPerHour, /* расход в боковом участке */
-                                                        double angleDegrees /* угол */
+                                                        double angleDegree /* угол */
                                                         )
     {
         /*
 		 * Сопротивление тройника вытяжного на проход, формула 7-2
 		 */
-        double K = _getTeeExhaustCoefficientK(areaTurnPipeSquareMeter: areaTurnPipeSquareMeters,
-                                        areaCollectorPipeSquareMeter: areaCollectorPipeSquareMeters,
+        double K = _getTeeExhaustCoefficientK(areaTurnPipeSquareMeter: areaTurnPipeSquareMeter,
+                                        areaCollectorPipeSquareMeter: areaCollectorPipeSquareMeter,
                                         flowRateTurnPipeCubicMeterPerHour: flowRateTurnPipeCubicMeterPerHour,
                                         flowRateCollectorPipeCubicMeterPerHour: flowRateCollectorPipeCubicMeterPerHour);
         double ksi = default;
-        double alph;
-        alph = angleDegrees * (Math.PI / 180d);
-        ksi = 1d - Math.Pow(1d - flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour, 2d) - (1.4d - flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour) * Math.Pow(flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour, 2d) * Math.Sin(alph) - 2d * K * (areaCollectorPipeSquareMeters / areaTurnPipeSquareMeters) * (flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour) * Math.Cos(alph);
+        double angleRadian;
+        angleRadian = angleDegree * (Math.PI / 180d);
+        ksi = 1d - Math.Pow(1d - flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour, 2d) - (1.4d - flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour) * Math.Pow(flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour, 2d) * Math.Sin(angleRadian) - 2d * K * (areaCollectorPipeSquareMeter / areaTurnPipeSquareMeter) * (flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour) * Math.Cos(angleRadian);
         return ksi;
 
     }
@@ -131,7 +181,7 @@ public class TeeExhaust
                                                         double areaCollectorPipeSquareMeter, /* площадь сечения сборного участка */
                                                         double areaTurnPipeSquareMeter, /* площадь сечения бокового участка */
                                                         double areaPassPipeSquareMeter, /* площадь сечения прямого участка (до соединения с боковым) */
-                                                        double angleDegrees /* угол */)
+                                                        double angleDegree /* угол */)
 
     {
         /*
@@ -144,9 +194,9 @@ public class TeeExhaust
                                             flowRateCollectorPipeCubicMeterPerHour: flowRateCollectorPipeCubicMeterPerHour,
                                             flowRateTurnPipeCubicMeterPerHour: flowRateTurnPipeCubicMeterPerHour);
         double ksi = default;
-        double alph;
-        alph = angleDegrees * (Math.PI / 180d);
-        ksi = A * (1d + Math.Pow(velocityTurnPipeMeterPerSecond / velocityCollectorPipeMeterPerSecond, 2d) - 2d * (areaPassPipeSquareMeter / areaCollectorPipeSquareMeter) * Math.Pow(velocityPassPipeMeterPerSecond / velocityCollectorPipeMeterPerSecond, 2d) - 2d * (areaTurnPipeSquareMeter / areaCollectorPipeSquareMeter) * Math.Pow(velocityTurnPipeMeterPerSecond / velocityCollectorPipeMeterPerSecond, 2d) * Math.Cos(alph));
+        double angleRadian;
+        angleRadian = angleDegree * (Math.PI / 180);
+        ksi = A * (1 + Math.Pow(velocityTurnPipeMeterPerSecond / velocityCollectorPipeMeterPerSecond, 2) - 2 * (areaPassPipeSquareMeter / areaCollectorPipeSquareMeter) * Math.Pow(velocityPassPipeMeterPerSecond / velocityCollectorPipeMeterPerSecond, 2) - 2 * (areaTurnPipeSquareMeter / areaCollectorPipeSquareMeter) * Math.Pow(velocityTurnPipeMeterPerSecond / velocityCollectorPipeMeterPerSecond, 2) * Math.Cos(angleRadian));
         return ksi;
 
     }

@@ -16,7 +16,7 @@ namespace HydraulicResistance.ElementsOfResistance
         3) потерь на расширение потока в диффузорой части
         4) потерь в плавном отводе
         */
-        public static double GetTeeSupplyOnPassAllRoundResistance(FluidList fluid,
+        public static double GetTeeSupplyOnPassAllRoundResistance(
                                                         double flowRateCollectorPipeCubicMetersPerHour,
                                                         double flowRateTurnPipeCubicMetersPerHour,
                                                         double diamCollectorPipeMillimeters,
@@ -37,7 +37,7 @@ namespace HydraulicResistance.ElementsOfResistance
                                                 areaPassPipeSquareMeters: areaPassPipeSquareMeters);
             return ksi;
         }
-        public static double GetTeeSupplyOnPassAllRectangularResistance(FluidList fluid,
+        public static double GetTeeSupplyOnPassAllRectangularResistance(
                                                                         double flowRateCollectorPipeCubicMetersPerHour,
                                                                         double flowRateTurnPipeCubicMetersPerHour,
                                                                         double widthCollectorPipeMillimeters,
@@ -61,7 +61,7 @@ namespace HydraulicResistance.ElementsOfResistance
                                               areaPassPipeSquareMeters: areaPassPipeSquareMeters);
             return ksi;
         }
-        public static double GetTeeSupplyOnPassAllRectangularButTurnRoundResistance(FluidList fluid,
+        public static double GetTeeSupplyOnPassAllRectangularButTurnRoundResistance(
                                                                                     double flowRateCollectorPipeCubicMetersPerHour,
                                                                                     double flowRateTurnPipeCubicMetersPerHour,
                                                                                     double widthCollectorPipeMillimeters,
@@ -84,7 +84,7 @@ namespace HydraulicResistance.ElementsOfResistance
                                                 areaPassPipeSquareMeters: areaPassPipeSquareMeters);
             return ksi;
         }
-        public static double GetTeeSupplyOnTurnAllRoundResistance(FluidList fluid,
+        public static double GetTeeSupplyOnTurnAllRoundResistance(
                                                         double flowRateCollectorPipeCubicMetersPerHour,
                                                         double flowRateTurnPipeCubicMetersPerHour,
                                                         double diamCollectorPipeMillimeters,
@@ -104,7 +104,7 @@ namespace HydraulicResistance.ElementsOfResistance
                                             angleDegrees);
             return ksi;
         }
-        public static double GetTeeSupplyOnTurnAllRectangularResistance(FluidList fluid,
+        public static double GetTeeSupplyOnTurnAllRectangularResistance(
                                                                         double flowRateCollectorPipeCubicMetersPerHour,
                                                                         double flowRateTurnPipeCubicMetersPerHour,
                                                                         double widthCollectorPipeMillimeters,
@@ -127,7 +127,7 @@ namespace HydraulicResistance.ElementsOfResistance
                                 angleDegrees);
             return ksi;
         }
-        public static double GetTeeSupplyOnTurnAllRectangularButTurnRoundResistance(FluidList fluid,
+        public static double GetTeeSupplyOnTurnAllRectangularButTurnRoundResistance(
                                                                                     double flowRateCollectorPipeCubicMetersPerHour,
                                                                                     double flowRateTurnPipeCubicMetersPerHour,
                                                                                     double widthCollectorPipeMillimeters,
@@ -276,8 +276,11 @@ namespace HydraulicResistance.ElementsOfResistance
                         break;
                 }
             }
-            double block1 = (flowRateTurnPipeCubicMetersPerHour / flowRateCollectorPipeCubicMetersPerHour) * (areaTurnPipeSquareMeters / areaCollectorPipeSquareMeters);
-            double ksi = A * (1 + Math.Pow(block1, 2) - 2 * block1 * Math.Cos(angleDegrees)) - Kb * Math.Pow(block1, 2);
+            double velocityCollectorPipeMeterPerSecond =Flow.GetFlowVelocity(flowRateCollectorPipeCubicMetersPerHour,areaCollectorPipeSquareMeters).As(SpeedUnit.MeterPerSecond);
+            double velocityTurnPipeMeterPerSecond =Flow.GetFlowVelocity(flowRateTurnPipeCubicMetersPerHour,areaTurnPipeSquareMeters).As(SpeedUnit.MeterPerSecond);
+            double block1 = velocityTurnPipeMeterPerSecond/velocityCollectorPipeMeterPerSecond;
+            double angle = Math.PI * angleDegrees / 180.0;
+            double ksi = A * (1 + Math.Pow(block1, 2) - 2 * block1 * Math.Cos(angle)) - Kb * Math.Pow(block1, 2);
             return ksi;
         }
     }
