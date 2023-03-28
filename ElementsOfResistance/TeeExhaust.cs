@@ -6,7 +6,7 @@ using EngineeringUnits.Units;
 
 public class TeeExhaust
 {
-    public static double GetTeeExhaustOnPassAllRoundResistance(
+    public static double OnPassRound(
                                                 double flowRateCollectorPipeCubicMeterPerHour,
                                                 double flowRateTurnPipeCubicMeterPerHour,
                                                 double diamCollectorPipeMillimeter,
@@ -25,7 +25,7 @@ public class TeeExhaust
                                             angleDegree: angleDegree);
         return ksi;
     }
-    public static double GetTeeExhaustOnPassAllRectangularResistance(
+    public static double OnPassRectangular(
                                                                     double flowRateCollectorPipeCubicMeterPerHour,
                                                                     double flowRateTurnPipeCubicMeterPerHour,
                                                                     double widthCollectorPipeMillimeter,
@@ -48,7 +48,7 @@ public class TeeExhaust
         
         return ksi;
     }
-    public static double GetTeeExhaustOnPassAllRectangularButTurnRoundResistance(
+    public static double OnPassRectangularButTurnRound(
                                                                                 double flowRateCollectorPipeCubicMeterPerHour,
                                                                                 double flowRateTurnPipeCubicMeterPerHour,
                                                                                 double widthCollectorPipeMillimeter,
@@ -70,7 +70,7 @@ public class TeeExhaust
 
         return ksi;
     }
-    public static double GetTeeExhaustOnTurnAllRoundResistance(
+    public static double OnTurnRound(
                                                     double flowRateCollectorPipeCubicMeterPerHour,
                                                     double flowRateTurnPipeCubicMeterPerHour,
                                                     double diamCollectorPipeMillimeter,
@@ -95,7 +95,7 @@ public class TeeExhaust
                                             angleDegree: angleDegree);
         return ksi;
     }
-    public static double GetTeeExhaustOnTurnAllRectangularResistance(
+    public static double OnTurnRectangular(
                                                                     double flowRateCollectorPipeCubicMeterPerHour,
                                                                     double flowRateTurnPipeCubicMeterPerHour,
                                                                     double widthCollectorPipeMillimeter,
@@ -124,7 +124,7 @@ public class TeeExhaust
 
         return ksi;
     }
-    public static double GetTeeExhaustOnTurnAllRectangularButTurnRoundResistance(
+    public static double OnTurnRectangularButTurnRound(
                                                                                 double flowRateCollectorPipeCubicMeterPerHour,
                                                                                 double flowRateTurnPipeCubicMeterPerHour,
                                                                                 double widthCollectorPipeMillimeter,

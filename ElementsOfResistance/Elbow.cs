@@ -7,31 +7,31 @@ namespace HydraulicResistance.ElementsOfResistance
 {
     public class Elbow
     {
-        public static double GetRoundElbowResistance(FluidList fluid,
-                                            double temperatureDegreesCelsius,
-                                            double equivalentRoughnessMillimeters,
-                                            double angleDegrees,
+        public static double Round(FluidList fluid,
+                                            double temperatureDegreeCelsius,
+                                            double equivalentRoughnessMillimeter,
+                                            double angleDegree,
                                             double rd,
-                                            double flowRateCubicMetersPerHour,
-                                            double diameterMillimeters){
-            var flow=new Flow(fluid,flowRateCubicMetersPerHour,diameterMillimeters);
-            var re=flow.GetReinoldsNumber(temperatureDegreesCelsius);
-            var lambda=flow.GetLambda(temperatureDegreesCelsius,equivalentRoughnessMillimeters);
-            double ksi = -_getElbowResistance(equivalentRoughnessMillimeters, angleDegrees, rd, lambda, re, 0,0, diameterMillimeters);
+                                            double flowRateCubicMeterPerHour,
+                                            double diameterMillimeter){
+            var flow=new Flow(fluid,flowRateCubicMeterPerHour,diameterMillimeter);
+            var re=flow.GetReinoldsNumber(temperatureDegreeCelsius);
+            var lambda=flow.GetLambda(temperatureDegreeCelsius,equivalentRoughnessMillimeter);
+            double ksi = -_getElbowResistance(equivalentRoughnessMillimeter, angleDegree, rd, lambda, re, 0,0, diameterMillimeter);
             return ksi;
         }
-        public static double GetRectangularElbowResistance( FluidList fluid,
+        public static double Rectangular( FluidList fluid,
                                                     double temperatureDegreesCelsius,
-                                                    double equivalentRoughnessMillimeters,
-                                                    double angleDegrees,
+                                                    double equivalentRoughnessMillimeter,
+                                                    double angleDegree,
                                                     double rd,
-                                                    double flowRateCubicMetersPerHour,
-                                                    double widthMillimeters,
-                                                    double heightMillimeters){
-            var flow=new Flow(fluid,flowRateCubicMetersPerHour,widthMillimeters,heightMillimeters);
+                                                    double flowRateCubicMeterPerHour,
+                                                    double widthMillimeter,
+                                                    double heightMillimeter){
+            var flow=new Flow(fluid,flowRateCubicMeterPerHour,widthMillimeter,heightMillimeter);
             var re=flow.GetReinoldsNumber(temperatureDegreesCelsius);
-            var lambda=flow.GetLambda(temperatureDegreesCelsius,equivalentRoughnessMillimeters);
-            double ksi=_getElbowResistance(equivalentRoughnessMillimeters,angleDegrees,rd,lambda,re,widthMillimeters,heightMillimeters,0);
+            var lambda=flow.GetLambda(temperatureDegreesCelsius,equivalentRoughnessMillimeter);
+            double ksi=_getElbowResistance(equivalentRoughnessMillimeter,angleDegree,rd,lambda,re,widthMillimeter,heightMillimeter,0);
             return ksi;
         }
         private static double _getElbowResistance(double equivalentRoughnessMillimeters, /* эквивалентная шероховатость, для стальных труб 0.2 мм, для воздуховодов 0.1 мм */
