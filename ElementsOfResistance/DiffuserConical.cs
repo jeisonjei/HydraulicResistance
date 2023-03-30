@@ -10,15 +10,15 @@ namespace HydraulicResistance.ElementsOfResistance
         /*
         Основными геометрическими характеристиками диффузоров с прямыми стенками являются
         1) Угол расширения angleDegree
-        2) Степень расширения n=areaSmall/areaBig
-        3) Относительная длина length/diamBig - обратите внимание - диаметр бОльшего сечения
+        2) Степень расширения n=areaBig/areaSmall
+        3) Относительная длина length/areaSmall - обратите внимание - диаметр меньшего сечения
         - Для расчёта потерь давления в диффузоре с ksi используется скорость в меньшем (начальном) сечении
         - Начало отрыва струи в диффузоре зависит как от его геометрических параметров, так и от режима течения (чисел Рейнольдса и Маха)
         - l0 - прямая проставка (то есть прямой участок) перед диффузором. В сетях обычно перед диффузором есть значительный прямой участок,
         поэтому можно предварительно принимать l0=10*D0
         - lд - длина диффузора
         */
-        public static double GetDiffuserConicalResistance( FluidList fluid,
+        public static double Resistance( FluidList fluid,
                                                             double tempCels,
                                                             double equivalentRoughness, 
                                                             double flowRateCubicMeterPerHour, 
@@ -33,12 +33,12 @@ namespace HydraulicResistance.ElementsOfResistance
             так что чтобы немного упростить функцию длина проставки будет постоянной для всех диффузоров.
             Длина проставки входит в сложную формулу ζнер из формулы пункта 38 на странице 193
             */
-            double lengthStraightPartBeforeDiffuserMillimeter = 10 * diamBigMillimeter;
+            double lengthStraightPartBeforeDiffuserMillimeter = 10 * diamSmallMillimeter;
             var length=new Length(lengthDiffuserMillimeter,LengthUnit.Millimeter);
             var diamSmall=new Length(diamSmallMillimeter,LengthUnit.Millimeter);
             var diamBig=new Length(diamBigMillimeter,LengthUnit.Millimeter);
-            var xCherta=_difsXCherta(lengthDiffuserMillimeter,diamBigMillimeter);
-            var lCherta = lengthStraightPartBeforeDiffuserMillimeter / diamBigMillimeter;
+            var xCherta=_difsXCherta(lengthDiffuserMillimeter,diamSmallMillimeter);
+            var lCherta = lengthStraightPartBeforeDiffuserMillimeter / diamSmallMillimeter;
             var xTilda=_difsXTilda(xCherta,angleDegree);
             var areaSmall=Mathematics.GetAreaCircle(diamSmallMillimeter).As(AreaUnit.SquareMeter);
             var areaBig=Mathematics.GetAreaCircle(diamBigMillimeter).As(AreaUnit.SquareMeter);
@@ -67,7 +67,7 @@ namespace HydraulicResistance.ElementsOfResistance
             double areaBig=Mathematics.GetAreaCircle(diamBigMillimeter).As(AreaUnit.SquareMeter);
             double n=_difsN(areaSmall,areaBig);
             double angleRadian=angleDegree*(Math.PI/180);
-            lengthMillimeter = (diamBigMillimeter * (n - 1)) / (2 * Math.Tan(angleRadian) / 2);
+            lengthMillimeter = (diamSmallMillimeter * n-diamSmallMillimeter) / (2 * Math.Tan(angleRadian/2));
             return lengthMillimeter;
         }
         private static double _getDiffuserConicalResistance(double dzetaTRHatch, /*  */
