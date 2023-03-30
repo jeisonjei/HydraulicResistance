@@ -5,22 +5,10 @@ using HydraulicResistance.Helpers;
 
 namespace HydraulicResistance.ElementsOfResistance
 {
-    public class Elbow
+    public class ElbowRectangular
     {
-        public static double Round(FluidList fluid,
-                                            double temperatureDegreeCelsius,
-                                            double equivalentRoughnessMillimeter,
-                                            double angleDegree,
-                                            double rd,
-                                            double flowRateCubicMeterPerHour,
-                                            double diameterMillimeter){
-            var flow=new Flow(fluid,flowRateCubicMeterPerHour,diameterMillimeter);
-            var re=flow.GetReinoldsNumber(temperatureDegreeCelsius);
-            var lambda=flow.GetLambda(temperatureDegreeCelsius,equivalentRoughnessMillimeter);
-            double ksi = -_getElbowResistance(equivalentRoughnessMillimeter, angleDegree, rd, lambda, re, 0,0, diameterMillimeter);
-            return ksi;
-        }
-        public static double Rectangular( FluidList fluid,
+
+        public static double Resistance( FluidList fluid,
                                                     double temperatureDegreesCelsius,
                                                     double equivalentRoughnessMillimeter,
                                                     double angleDegree,

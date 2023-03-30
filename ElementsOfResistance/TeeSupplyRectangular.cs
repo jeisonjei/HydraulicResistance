@@ -6,7 +6,7 @@ using Microsoft.VisualBasic.CompilerServices;
 
 namespace HydraulicResistance.ElementsOfResistance
 {
-    public class TeeSupply
+    public class TeeSupplyRectangular
     {
         /*
         Со страницы 333:
@@ -16,28 +16,8 @@ namespace HydraulicResistance.ElementsOfResistance
         3) потерь на расширение потока в диффузорой части
         4) потерь в плавном отводе
         */
-        public static double OnPassRound(
-                                                        double flowRateCollectorPipeCubicMetersPerHour,
-                                                        double flowRateTurnPipeCubicMetersPerHour,
-                                                        double diamCollectorPipeMillimeters,
-                                                        double diamTurnPipeMillimeters,
-                                                        double diamPassPipeMillimeters)
-        {
-            /*
-            Сопротивление приточного тройника на проход, все ответвления круглого сечения
-            */
-            double ksi = default;
-            var areaCollectorPipeSquareMeters = Mathematics.GetAreaCircle(diamCollectorPipeMillimeters).As(AreaUnit.SquareMeter);
-            var areaTurnPipeSquareMeters = Mathematics.GetAreaCircle(diamTurnPipeMillimeters).As(AreaUnit.SquareMeter);
-            var areaPassPipeSquareMeters = Mathematics.GetAreaCircle(diamPassPipeMillimeters).As(AreaUnit.SquareMeter);
-            ksi = _getTeeSupplyOnPassResistance(flowRateCollectorPipeCubicMetersPerHour: flowRateCollectorPipeCubicMetersPerHour,
-                                                flowRateTurnPipeCubicMetersPerHour: flowRateTurnPipeCubicMetersPerHour,
-                                                areaCollectorPipeSquareMeters: areaCollectorPipeSquareMeters,
-                                                areaTurnPipeSquareMeters: areaTurnPipeSquareMeters,
-                                                areaPassPipeSquareMeters: areaPassPipeSquareMeters);
-            return ksi;
-        }
-        public static double OnPassRectangular(
+    
+        public static double OnPassResistance(
                                                                         double flowRateCollectorPipeCubicMetersPerHour,
                                                                         double flowRateTurnPipeCubicMetersPerHour,
                                                                         double widthCollectorPipeMillimeters,
@@ -61,50 +41,8 @@ namespace HydraulicResistance.ElementsOfResistance
                                               areaPassPipeSquareMeters: areaPassPipeSquareMeters);
             return ksi;
         }
-        public static double OnPassRectangularButTurnRound(
-                                                                                    double flowRateCollectorPipeCubicMetersPerHour,
-                                                                                    double flowRateTurnPipeCubicMetersPerHour,
-                                                                                    double widthCollectorPipeMillimeters,
-                                                                                    double heightCollectorPipeMillimeters,
-                                                                                    double diamTurnPipeMillimeters,
-                                                                                    double widthPassPipeMillimeters,
-                                                                                    double heightPassPipeMillimeters)
-        {
-            /*
-            Сопротивление приточного тройника на проход, прямой и сборный участки прямоугольные, а ответвление - круглого сечения (к примеру случай с врезкой с воздуховод)
-            */
-            double ksi = default;
-            var areaCollectorPipeSquareMeters = Mathematics.GetAreaRectangle(widthCollectorPipeMillimeters, heightCollectorPipeMillimeters).As(AreaUnit.SquareMeter);
-            var areaTurnPipeSquareMeters = Mathematics.GetAreaCircle(diamTurnPipeMillimeters).As(AreaUnit.SquareMeter);
-            var areaPassPipeSquareMeters = Mathematics.GetAreaRectangle(widthPassPipeMillimeters, heightPassPipeMillimeters).As(AreaUnit.SquareMeter);
-            ksi = _getTeeSupplyOnPassResistance(flowRateCollectorPipeCubicMetersPerHour: flowRateCollectorPipeCubicMetersPerHour,
-                                                flowRateTurnPipeCubicMetersPerHour: flowRateTurnPipeCubicMetersPerHour,
-                                                areaCollectorPipeSquareMeters: areaCollectorPipeSquareMeters,
-                                                areaTurnPipeSquareMeters: areaTurnPipeSquareMeters,
-                                                areaPassPipeSquareMeters: areaPassPipeSquareMeters);
-            return ksi;
-        }
-        public static double OnTurnRound(
-                                                        double flowRateCollectorPipeCubicMetersPerHour,
-                                                        double flowRateTurnPipeCubicMetersPerHour,
-                                                        double diamCollectorPipeMillimeters,
-                                                        double diamTurnPipeMillimeters,
-                                                        double diamPassPipeMillimeters,
-                                                        double angleDegrees)
-        {
-            double ksi = default;
-            var areaCollectorPipeSquareMeters = Mathematics.GetAreaCircle(diamCollectorPipeMillimeters).As(AreaUnit.SquareMeter);
-            var areaTurnPipeSquareMeters = Mathematics.GetAreaCircle(diamTurnPipeMillimeters).As(AreaUnit.SquareMeter);
-            var areaPassPipeSquareMeters = Mathematics.GetAreaCircle(diamPassPipeMillimeters).As(AreaUnit.SquareMeter);
-            ksi = _getTeeSupplyOnTurnResistance(flowRateCollectorPipeCubicMetersPerHour: flowRateCollectorPipeCubicMetersPerHour,
-                                            flowRateTurnPipeCubicMetersPerHour: flowRateTurnPipeCubicMetersPerHour,
-                                            areaCollectorPipeSquareMeters: areaCollectorPipeSquareMeters,
-                                            areaTurnPipeSquareMeters: areaTurnPipeSquareMeters,
-                                            areaPassPipeSquareMeters: areaPassPipeSquareMeters,
-                                            angleDegrees);
-            return ksi;
-        }
-        public static double OnTurnRectangular(
+        
+        public static double ToTurnResistance(
                                                                         double flowRateCollectorPipeCubicMetersPerHour,
                                                                         double flowRateTurnPipeCubicMetersPerHour,
                                                                         double widthCollectorPipeMillimeters,
@@ -127,28 +65,7 @@ namespace HydraulicResistance.ElementsOfResistance
                                 angleDegrees);
             return ksi;
         }
-        public static double OnTurnRectangularButTurnRound(
-                                                                                    double flowRateCollectorPipeCubicMetersPerHour,
-                                                                                    double flowRateTurnPipeCubicMetersPerHour,
-                                                                                    double widthCollectorPipeMillimeters,
-                                                                                    double heightCollectorPipeMillimeters,
-                                                                                    double diamTurnPipeMillimeters,
-                                                                                    double widthPassPipeMillimeters,
-                                                                                    double heightPassPipeMillimeters,
-                                                                                    double angleDegrees)
-        {
-            double ksi = default;
-            var areaCollectorPipeSquareMeters = Mathematics.GetAreaRectangle(widthCollectorPipeMillimeters, heightCollectorPipeMillimeters).As(AreaUnit.SquareMeter);
-            var areaTurnPipeSquareMeters = Mathematics.GetAreaCircle(diamTurnPipeMillimeters).As(AreaUnit.SquareMeter);
-            var areaPassPipeSquareMeters = Mathematics.GetAreaRectangle(widthPassPipeMillimeters, heightPassPipeMillimeters).As(AreaUnit.SquareMeter);
-            ksi = _getTeeSupplyOnTurnResistance(flowRateCollectorPipeCubicMetersPerHour: flowRateCollectorPipeCubicMetersPerHour,
-                                flowRateTurnPipeCubicMetersPerHour: flowRateTurnPipeCubicMetersPerHour,
-                                areaCollectorPipeSquareMeters: areaCollectorPipeSquareMeters,
-                                areaTurnPipeSquareMeters: areaTurnPipeSquareMeters,
-                                areaPassPipeSquareMeters: areaPassPipeSquareMeters,
-                                angleDegrees);
-            return ksi;
-        }
+       
 
         private static double _getTeeSupplyOnPassResistance(double flowRateCollectorPipeCubicMetersPerHour, /* расход в сборном участке */
                                                          double flowRateTurnPipeCubicMetersPerHour /* расход в боковом ответвлении */,
