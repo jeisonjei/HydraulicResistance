@@ -8,6 +8,71 @@ namespace HydraulicResistance.ElementsOfResistance
 {
     public class DiffuserPyramidal
     {
+        /*
+        В пирамидальных диффузорах сопротивление почти всегда выше, чем в конических, хотя структура потока и характер кривых сопротивления 
+        в основном такие же, как и для конических диффузоров.
+        Сопротивление плоских диффузоров (диффузоры с расширением только в одной плоскости) при одинаковых углах и степенях расширения 
+        заметно меньше, чем в диффузорах с расширением сечения в двух плоскостях, и во многих случаях даже несколько меньше, чем в конических
+        */
+public static double Resistance( FluidList fluid,
+                                                            double tempCels,
+                                                            double equivalentRoughness, 
+                                                            double flowRateCubicMeterPerHour, 
+                                                            double widthSmallMillimeter,
+                                                            double heightSmallMillimeter,
+                                                            double widthBigMillimeter, 
+                                                            double heightBigMillimeter,
+                                                            double lengthDiffuserMillimeter,
+                                                            double angleAlphaDegree,
+                                                            double angleBetaDegree){
+            double ksi = default;
+            /* 
+            для всех расчётов длина прямой проставки принимается в 10 раз больше бОльшего диаметра,
+            приблизительно оценивалось, и с такой длиной проставки сопротивление получается наибольшем, 
+            так что чтобы немного упростить функцию длина проставки будет постоянной для всех диффузоров.
+            Длина проставки входит в сложную формулу ζнер из формулы пункта 38 на странице 193
+            При углах расширения начиная от 90 до 180 потери в диффузоре становятся близкими к потерям при внезапном расширении,
+            поэтому если требуется очень короткий переходный участок, проще применить внезапное расширение
+            */
+            var equivalentDiamSmallMillimeter=Mathematics.GetEquivalentDiameter(widthSmallMillimeter,heightSmallMillimeter).As(LengthUnit.Millimeter);
+            double lengthStraightPartBeforeDiffuserMillimeter = 10 * equivalentDiamSmallMillimeter;
+            var xCherta = lengthDiffuserMillimeter / equivalentDiamSmallMillimeter;
+            var lCherta = lengthStraightPartBeforeDiffuserMillimeter / equivalentDiamSmallMillimeter;
+            var angleAlphaRadian=angleAlphaDegree*(Math.PI/180);
+            var angleBetaRadian=angleBetaDegree*(Math.PI/180);
+            var tanAlphaDividedBy2=Math.Tan(angleAlphaRadian/2);
+            var tanBetaDividedBy2=Math.Tan(angleBetaRadian/2);
+            var ta = tanAlphaDividedBy2;
+            var tb = tanBetaDividedBy2;
+            var a_x =widthSmallMillimeter+2*lengthDiffuserMillimeter*ta;
+            var b_x =heightSmallMillimeter+2*lengthDiffuserMillimeter*tb;
+            var D_g0=equivalentDiamSmallMillimeter;
+            var a_x_ = a_x / D_g0;
+            var b_x_ = b_x / D_g0;
+            var a0_ =widthSmallMillimeter/D_g0;
+            var b0_ =heightSmallMillimeter/D_g0;
+            var D_gx_=_difsPDHydraulicX(a0_,b0_,xCherta,angleAlphaDegree,angleBetaDegree) ;
+            var xTilda=_difsPXTilda(a0_,b0_,angleAlphaDegree,angleBetaDegree,xCherta);
+            var areaSmall=Mathematics.GetAreaRectangle(widthSmallMillimeter,heightSmallMillimeter).As(AreaUnit.SquareMeter);
+            var areaBig=Mathematics.GetAreaRectangle(widthBigMillimeter,heightBigMillimeter).As(AreaUnit.SquareMeter);
+            var flow=new Flow(fluid,flowRateCubicMeterPerHour,widthSmallMillimeter,heightSmallMillimeter);
+            var lambda=flow.GetLambda(tempCels,equivalentRoughness);
+            var re=flow.GetReinoldsNumber(tempCels);
+            var n = areaBig / areaSmall;
+            var dzetaTr=_difsPDzetaTR(lambda,angleAlphaDegree,angleBetaDegree,n);
+            var dzetaTrHatch=_difsPDzetaTRHatch(dzetaTr,xTilda);
+            var phi=_difsPPhi(angleAlphaDegree,re);
+            var dzetaR=_difsPDzetaR(phi,n);
+            var s=_difsPs(angleAlphaDegree);
+            var t=_difsPt(lCherta);
+            var u=_difsPu(re);
+            var dzetaN=_difsPDzetaN(angleAlphaDegree:angleAlphaDegree,
+            n:n,l0_:lengthStraightPartBeforeDiffuserMillimeter,re:re,s:s,t:t,u:u);
+            ksi=_difsPyr(difsPDzetaHatch:dzetaTrHatch,
+                                                difsPDzetaR:dzetaR,
+                                                difsPDzetaN:dzetaN);
+            return ksi;
+        }
         private static double _difsPyr(double difsPDzetaHatch, /* коэффициент сопротивления трения с поправкой
                                                         на относительную длину диффузора,
                                                         вычисляется по той же формуле, что и для конического
@@ -48,12 +113,26 @@ namespace HydraulicResistance.ElementsOfResistance
             double difsPDzetaTRRet = default;
             double alph;
             double bet;
-            alph = alpha / (180d * Math.PI);
-            bet = beta / (180d * Math.PI);
+            alph = alpha * (Math.PI/180);
+            bet = beta * (Math.PI/180);
 
             difsPDzetaTRRet = lambda / 16d * (1d - 1d / Math.Pow(n, 2d)) * (1d / Math.Sin(alph / 2d) + 1d / Math.Sin(bet / 2d));
             return difsPDzetaTRRet;
         }
+                private static double _difsPDzetaTRHatch(double dzetaTR, /* коэффициент сопротивления трения конического или пирамидального диффузора 
+                                                        (формулы разные). Для конических диффузоров функция difsDzetaTR*/
+                                         double xTilda)
+        {
+            /*
+            Коэффициент сопротивления трения для конических и пирамидальных диффузоров ζ'тр
+            Пункт 38 на странице 192
+            */
+            double difsDzetaTRHatchRet = default;
+
+            difsDzetaTRHatchRet = (1d + 0.5d / Math.Pow(1.5d, xTilda)) * dzetaTR;
+            return difsDzetaTRHatchRet;
+        }
+
 
         private static double _difsPDzetaR(double difsPPhi, double n)
         {
@@ -635,18 +714,23 @@ namespace HydraulicResistance.ElementsOfResistance
 
             return difsPPhiRet;
         }
-        private static double _difsPDzetaN(double alpha, double n, double l, double re, double s, double t, double u)
+        private static double _difsPDzetaN(double angleAlphaDegree, double n, double l0_, double re, double s, double t, double u)
         {
             /*
             Коэффициент ζнер для пирамидального диффузора
             Пункт 40 на странице 193, формула после формулы 5-8
             */
             double difsPDzetaNRet = default;
-            double alph;
-            alph = alpha * (Math.PI / 180d);
-
-            difsPDzetaNRet = 0.024d * Math.Pow(0.625d * alph, s) * (1d - Math.Pow(2.81d * n - 1.81d, -1.04d)) * Math.Pow(0.303d * l, t) * Math.Pow(4.8d * Math.Pow(10d, -7) * re + 1.8d, u);
-            return difsPDzetaNRet;
+            double angleAlphaRadian = angleAlphaDegree * (Math.PI / 180);
+            double block1 = 0.024*(0.625*angleAlphaRadian).Grade(s);
+            double block2 =1-(2.81*n-1.81).Grade(-1.04);
+            double block3 =(0.303*l0_).Grade(t);
+            // a для работы функции Grade()
+            double a = 1;
+            double block4 =(4.8*((a*10).Grade(-7))*re+1.8).Grade(u);
+            double dzeta = block1 * block2 * block3 * block4;
+            // difsPDzetaNRet = 0.024 * Math.Pow(0.625 * alph, s) * (1 - Math.Pow(2.81 * n - 1.81, -1.04)) * Math.Pow(0.303 * l, t) * Math.Pow(4.8 * Math.Pow(10, -7) * re + 1.8, u);
+            return dzeta;
         }
         private static double _difsPs(double alpha)
         {
@@ -698,15 +782,47 @@ namespace HydraulicResistance.ElementsOfResistance
         {
             /*
             Отношение размера стороны воздуховода к гидравлическому диаметру,
-            для расчёта коэффициентов ax с чертой и bx с чертой
+            для расчёта коэффициентов a0 с чертой и b0 с чертой
             Пункт 40 на странице 193
             */
             double difsPSizeChertaRet = default;
             difsPSizeChertaRet = size / difsPDGidraulic;
             return difsPSizeChertaRet;
         }
+        private static double _difsPXTilda(double a0_,double b0_,double angleAlphaDegree,double angleBetaDegree,double x_){
+            double angleAlphaRadian = angleAlphaDegree * (Math.PI / 180);
+            double angleBetaRadian=angleBetaDegree*(Math.PI/180);
+            // развёрнутое название для пояснения
+            double tanAlphaDividedBy2=Math.Tan(angleAlphaRadian/2);
+            double tanBetaDividedBy2=Math.Tan(angleBetaRadian/2);
+            // краткое название для использования
+            double ta = tanAlphaDividedBy2;
+            double tb = tanBetaDividedBy2;
+            double block1 =(a0_+b0_)/
+            (
+                (4*a0_*Math.Tan(angleBetaRadian/2))-
+                (b0_*Math.Tan(angleAlphaRadian/2))
+            );
+            double block21 =(a0_*tb+b0_*ta);
+            double block22 =ta+tb;
+            double block23 =2*ta*tb;
+            double block2 =(block21*block22)/block23;
+            double block31 =2*a0_*ta*tb.Grade(2);
+            double block32 =a0_*b0_*ta*tb;
+            double block33 =2*b0_*ta.Grade(2)*tb;
+            double block34 =a0_*b0_*ta*tb;
+            double block3 =Math.Log((block31+block32)/(block33+block34));
+            double block4 =(ta+tb)/(8*ta*tb);
+            double block51 =4*x_*ta*tb;
+            double block52 =2*x_*(a0_*tb+b0_*ta);
+            double block53 =a0_*b0_;
+            double block54 =a0_*b0_;
+            double block5=Math.Log((block51+block52+block53)/(block54));
+            double xTilda = (block1 - block2) * block3 + block4 * block5;
+            return xTilda;
+        }
 
-        private static double _difsPDGidraulicX(double asize1cherta, double bsize1cherta, double xCherta, double alpha, double beta)
+        private static double _difsPDHydraulicX(double asize1cherta, double bsize1cherta, double xCherta, double alpha, double beta)
         {
             /*
             Безразмерный гидравлический диаметр диффузора
@@ -731,5 +847,7 @@ namespace HydraulicResistance.ElementsOfResistance
             return difsPDGidraulicXRet;
 
         }
+
+
     }
 }

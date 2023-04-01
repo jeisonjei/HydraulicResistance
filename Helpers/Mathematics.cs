@@ -16,5 +16,10 @@ namespace HydraulicResistance.Helpers
         var area = width * height;
         return area.ToUnit(AreaUnit.SquareMeter);
     }
+    public static Length GetEquivalentDiameter(double widthMillimeters,double heightMillimeters){
+        var eqD=(2*widthMillimeters*heightMillimeters)/(widthMillimeters+heightMillimeters);
+        var equivalentDiameterMillimeter=new Length(eqD,LengthUnit.Millimeter);
+            return equivalentDiameterMillimeter;
+        }
 }
 }
