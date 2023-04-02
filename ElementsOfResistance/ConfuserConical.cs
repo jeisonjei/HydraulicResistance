@@ -24,7 +24,7 @@ namespace HydraulicResistance.ElementsOfResistance
             double ksi = default;
             double areaBigSquareMeter=Mathematics.GetAreaCircle(diamBigMillimeter).As(AreaUnit.SquareMeter);
             double areaSmallSquareMeter = Mathematics.GetAreaCircle(diamSmallMillimeter).As(AreaUnit.SquareMeter);
-            double dzetaM = _getDzetaM(areaBigSquareMeter,areaSmallSquareMeter,angleDegree);
+            double dzetaM = _getDzetaM(areaBigSquareMeter:areaBigSquareMeter,areaSmallSquareMeter:areaSmallSquareMeter,angleDegree:angleDegree);
             var flow=new Flow(fluid,flowRateCubicMeterPerHour,diamBigMillimeter); /* при расчёте lambda берётся число Re на входе, то есть используется диаметр бОльшего участка,
             страница 206 */
             double lambda=flow.GetLambda(tempCels,equivalentRoughness);
