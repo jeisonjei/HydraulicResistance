@@ -25,19 +25,19 @@ namespace HydraulicResistance.Helpers
 		private readonly Shape _shape;
 		public double Δ { get; set; }
 
-		public Flow(FluidList fluid,double flowRate, double diam)
+		public Flow(FluidList fluid,double flowRateCubicMeterPerHour, double diamMillimeter)
 		{
 			_fluid = new Fluid(fluid);
-			_flowRate = flowRate;
-			_diam = diam;
+			_flowRate = flowRateCubicMeterPerHour;
+			_diam = diamMillimeter;
 			_shape = Shape.Round;
 		}
-		public Flow(FluidList fluid, double flowRate, double width,double height)
+		public Flow(FluidList fluid, double flowRateCubicMeterPerHour, double widthMillimeter,double heightMillimeter)
 		{
 			_fluid = new Fluid(fluid);
-			_flowRate = flowRate;
-			_width = width;
-			_height = height;
+			_flowRate = flowRateCubicMeterPerHour;
+			_width = widthMillimeter;
+			_height = heightMillimeter;
 			_shape = Shape.Rectangular;
 		}
 

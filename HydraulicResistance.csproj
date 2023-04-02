@@ -6,10 +6,13 @@
     <Nullable>enable</Nullable>
 	  <PackageVersion>1.0.4-alpha</PackageVersion>
 	  <Authors>Danil Poletavkin</Authors>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  <Description>Library for calculations of fittings's hydraulic resistance made by "Handbook of Hydraulic Resistance" I.E.Idel'chik</Description>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="SharpFluids" Version="3.0.371" />
+    <None Include=".\README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
 </Project>

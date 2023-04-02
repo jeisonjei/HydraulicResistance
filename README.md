@@ -1,4 +1,5 @@
 # Hydraulic Resistance
+GitHub repository <https://github.com/jeisonjei/HydraulicResistance>
 Library for calculations of fittings's hydraulic resistance made by "Handbook of Hydraulic Resistance" I.E.Idel'chik. This is alpha version of library so use with caution
 ## Arguments
 `equivalentRoughnessMillimeter` - 0.1 mm for ducts and 0.2 mm for water heating pipes can be used. Detailed table for different types of pipes can be found at <https://ccjx.space/handbook/Эквивалентная-шероховатость-труб-и-каналов> - page on russian but can be translated using browser tools.  
@@ -20,5 +21,9 @@ To calculate conical diffuser's resistance:
 ```
 double conicalDiffuserResistance=DiffuserConical.Resistance(...arguments...)
 ```
+To calculate pyramidal diffuser's resistance:
+```
+double pyramidalDiffuserResistance=DiffuserPyramidal.Resistance(...arguments...)
+```
 ## Attention
-Pyramidal diffusers, confusers still in development
+Confusers still in development
