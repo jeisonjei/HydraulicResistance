@@ -45,7 +45,7 @@ namespace HydraulicResistance.ElementsOfResistance
             */
             double angleAlphaRadian = angleAlphaDegree * (Math.PI/180);
             double angleBetaRadian = angleBetaDegree * (Math.PI/180);
-            double n = areaBigSquareMeter/areaSmallSquareMeter; /* здесь в отличие от функции _getDzetaM здесь большая площадь делится на меньшую */
+            double n = areaBigSquareMeter/areaSmallSquareMeter; /* в отличие от функции _getDzetaM здесь большая площадь делится на меньшую */
             double dzetaTr = lambda / 16 * (1 - 1 / n.Grade(2)) * (1 / Math.Sin(angleAlphaRadian / 2) + 1 / Math.Sin(angleBetaRadian / 2));
             return dzetaTr;
         }

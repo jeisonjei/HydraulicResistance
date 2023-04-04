@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <PackageVersion>1.0.7-alpha</PackageVersion>
+	  <PackageVersion>1.0.9-alpha</PackageVersion>
 	  <Authors>Danil Poletavkin</Authors>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   <Description>Library for calculations of fittings's hydraulic resistance based on "Handbook of Hydraulic Resistance" I.E.Idel'chik</Description>
