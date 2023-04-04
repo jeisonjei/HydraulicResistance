@@ -7,12 +7,14 @@
 	  <PackageVersion>1.0.9-alpha</PackageVersion>
 	  <Authors>Danil Poletavkin</Authors>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   <Description>Library for calculations of fittings's hydraulic resistance based on "Handbook of Hydraulic Resistance" I.E.Idel'chik</Description>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="SharpFluids" Version="3.0.371" />
     <None Include=".\README.md" Pack="true" PackagePath="\"/>
+    <None Include=".\LICENSE.txt" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
 </Project>
