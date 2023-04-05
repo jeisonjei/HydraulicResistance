@@ -6,13 +6,11 @@ using HydraulicResistance.Helpers;
 
 namespace HydraulicResistance.ElementsOfResistance
 {
-    public class DiffuserPyramidal
+    public class DiffuserFlat
     {
         /*
-        В пирамидальных диффузорах сопротивление почти всегда выше, чем в конических, хотя структура потока и характер кривых сопротивления 
-        в основном такие же, как и для конических диффузоров.
-        Сопротивление плоских диффузоров (диффузоры с расширением только в одной плоскости) при одинаковых углах и степенях расширения 
-        заметно меньше, чем в диффузорах с расширением сечения в двух плоскостях, и во многих случаях даже несколько меньше, чем в конических
+        Плоский диффузор - это диффузор с расширением только в одной плоскости,
+        расчётные зависимости - пункт 41, страницы 193-194
         */
         public static double Resistance(FluidList fluid,
                                                                     double tempCels,
@@ -23,8 +21,7 @@ namespace HydraulicResistance.ElementsOfResistance
                                                                     double widthBigMillimeter,
                                                                     double heightBigMillimeter,
                                                                     double lengthDiffuserMillimeter,
-                                                                    double angleAlphaDegree,
-                                                                    double angleBetaDegree)
+                                                                    double angleDegree)
         {
             double ksi = default;
             /* 
@@ -37,38 +34,30 @@ namespace HydraulicResistance.ElementsOfResistance
             */
             var equivalentDiamSmallMillimeter = Mathematics.GetEquivalentDiameter(widthSmallMillimeter, heightSmallMillimeter).As(LengthUnit.Millimeter);
             double lengthStraightPartBeforeDiffuserMillimeter = 10 * equivalentDiamSmallMillimeter;
-            var xCherta = lengthDiffuserMillimeter / equivalentDiamSmallMillimeter;
+            var x_ = lengthDiffuserMillimeter / equivalentDiamSmallMillimeter;
             var lCherta = lengthStraightPartBeforeDiffuserMillimeter / equivalentDiamSmallMillimeter;
-            var angleAlphaRadian = angleAlphaDegree * (Math.PI / 180);
-            var angleBetaRadian = angleBetaDegree * (Math.PI / 180);
+            var angleAlphaRadian = angleDegree * (Math.PI / 180);
             var tanAlphaDividedBy2 = Math.Tan(angleAlphaRadian / 2);
-            var tanBetaDividedBy2 = Math.Tan(angleBetaRadian / 2);
             var ta = tanAlphaDividedBy2;
-            var tb = tanBetaDividedBy2;
             var a_x = widthSmallMillimeter + 2 * lengthDiffuserMillimeter * ta;
-            var b_x = heightSmallMillimeter + 2 * lengthDiffuserMillimeter * tb;
             var D_g0 = equivalentDiamSmallMillimeter;
             var a_x_ = a_x / D_g0;
-            var b_x_ = b_x / D_g0;
             var a0_ = widthSmallMillimeter / D_g0;
             var b0_ = heightSmallMillimeter / D_g0;
-            var D_gx_ = _difsPDHydraulicX(a0_, b0_, xCherta, angleAlphaDegree, angleBetaDegree);
-            var xTilda = _difsPXTilda(a0_, b0_, angleAlphaDegree, angleBetaDegree, xCherta);
+            var D_gx_ = _difsFDHydraulicX(a0_:a0_,b0_:b0_,b0:heightSmallMillimeter,x_,angleDegree);
+            var xTilda = _difsFXTilda(a0_,b0_,angleDegree,x_);
             var areaSmall = Mathematics.GetAreaRectangle(widthSmallMillimeter, heightSmallMillimeter).As(AreaUnit.SquareMeter);
             var areaBig = Mathematics.GetAreaRectangle(widthBigMillimeter, heightBigMillimeter).As(AreaUnit.SquareMeter);
             var flow = new Flow(fluid, flowRateCubicMeterPerHour, widthSmallMillimeter, heightSmallMillimeter);
             var lambda = flow.GetLambda(tempCels, equivalentRoughness);
             var re = flow.GetReinoldsNumber(tempCels);
             var n = areaBig / areaSmall;
-            var dzetaTr = _difsPDzetaTR(lambda, angleAlphaDegree, angleBetaDegree, n);
+            var dzetaTr = _difsFDzetaTr(lambda,widthSmallMillimeter,heightSmallMillimeter,widthBigMillimeter,heightBigMillimeter,angleDegree);
             var dzetaTrHatch = _difsPDzetaTRHatch(dzetaTr, xTilda);
-            var phi = _difsPPhi(angleAlphaDegree, re);
+            var phi = _difsPPhi(angleDegree, re);
             var dzetaR = _difsPDzetaR(phi, n);
-            var s = _difsPs(angleAlphaDegree);
-            var t = _difsPt(lCherta);
-            var u = _difsPu(re);
-            var dzetaN = _difsPDzetaN(angleAlphaDegree: angleAlphaDegree,
-            n: n, l0_: lengthStraightPartBeforeDiffuserMillimeter, re: re, s: s, t: t, u: u);
+            var dzetaN = _difsFDzetaN(angleAlphaDegree: angleDegree,
+            n: n, l0_: lengthStraightPartBeforeDiffuserMillimeter, re: re);
             ksi = _difsPyr(difsPDzetaHatch: dzetaTrHatch,
                                                 difsPDzetaR: dzetaR,
                                                 difsPDzetaN: dzetaN);
@@ -105,20 +94,19 @@ namespace HydraulicResistance.ElementsOfResistance
             return difsPNRet;
         }
 
-        private static double _difsPDzetaTR(double lambda, double alpha, double beta, double n)
+        private static double _difsFDzetaTr(double lambda, double widthSmallMillimeter, double heightSmallMillimeter, double widthBigMillimeter, double heightBigMillimeter, double angleDegree)
         {
-            /*
-            Коэффициент сопротивления трения  пирамидального диффузора ζтр
-            Формула 5-8 на странице 193
-            */
-            double difsPDzetaTRRet = default;
-            double alph;
-            double bet;
-            alph = alpha * (Math.PI / 180);
-            bet = beta * (Math.PI / 180);
-
-            difsPDzetaTRRet = lambda / 16d * (1d - 1d / Math.Pow(n, 2d)) * (1d / Math.Sin(alph / 2d) + 1d / Math.Sin(bet / 2d));
-            return difsPDzetaTRRet;
+            double dzetaTr = default;
+            double angleRadian = angleDegree * (Math.PI / 180);
+            double sinAlphaDividedBy2 = Math.Sin(angleRadian / 2);
+            double a = sinAlphaDividedBy2;
+            double a0 = widthSmallMillimeter;
+            double b0 = heightSmallMillimeter;
+            var areaBig = Mathematics.GetAreaRectangle(widthBigMillimeter, heightBigMillimeter).As(AreaUnit.SquareMeter);
+            var areaSmall = Mathematics.GetAreaRectangle(widthSmallMillimeter, heightSmallMillimeter).As(AreaUnit.SquareMeter);
+            double n = areaBig / areaSmall; /* в отличие от функции _getDzetaM здесь большая площадь делится на меньшую */
+            dzetaTr = (lambda / (4 * a)) * ((a0 / b0) * (1 - 1 / n) + 0.5 * (1 - 1 / n.Grade(2)));
+            return dzetaTr;
         }
         private static double _difsPDzetaTRHatch(double dzetaTR, /* коэффициент сопротивления трения конического или пирамидального диффузора 
                                                         (формулы разные). Для конических диффузоров функция difsDzetaTR*/
@@ -715,22 +703,26 @@ namespace HydraulicResistance.ElementsOfResistance
 
             return difsPPhiRet;
         }
-        private static double _difsPDzetaN(double angleAlphaDegree, double n, double l0_, double re, double s, double t, double u)
+        private static double _difsFDzetaN(double angleAlphaDegree, double n, double l0_, double re)
         {
             /*
-            Коэффициент ζнер для пирамидального диффузора
-            Пункт 40 на странице 193, формула после формулы 5-8
+            Коэффициент ζнер для плоского диффузора
+            Пункт 41 на странице 194, формула после формулы 5-8
             */
-            double difsPDzetaNRet = default;
+            double dzeta = default;
             double angleAlphaRadian = angleAlphaDegree * (Math.PI / 180);
-            double block1 = 0.024 * (0.625 * angleAlphaRadian).Grade(s);
-            double block2 = 1 - (2.81 * n - 1.81).Grade(-1.04);
-            double block3 = (0.303 * l0_).Grade(t);
-            // a для работы функции Grade()
-            double a = 1;
-            double block4 = (4.8 * ((a * 10).Grade(-7)) * re + 1.8).Grade(u);
-            double dzeta = block1 * block2 * block3 * block4;
-            // difsPDzetaNRet = 0.024 * Math.Pow(0.625 * alph, s) * (1 - Math.Pow(2.81 * n - 1.81, -1.04)) * Math.Pow(0.303 * l, t) * Math.Pow(4.8 * Math.Pow(10, -7) * re + 1.8, u);
+            double block11 = 0.0106;
+            double block12 = (0.625 * angleAlphaRadian);
+            double block12grade=1.0/(1+4.31*((10d).Grade(-8))*angleAlphaRadian.Grade(4.62));
+            double block1=block11*block12.Grade(block12grade);
+            double block21 =1-(0.658*(n-1)+1).Grade(-1.79);
+            double block22 =0.303*l0_;
+            double block22grade =0.75/(1+6.32*((10d).Grade(-6))*l0_.Grade(7.11));
+            double block2=block21*(block22).Grade(block22grade);
+            double block31 =(1.65*((10d).Grade(-5))*re+1.4);
+            double block31grade =1.0/(1+6.4*((10d).Grade(-12.9))*re.Grade(2.37));
+            double block3=block31.Grade(block31grade);
+            dzeta = block1 * block2 * block3;
             return dzeta;
         }
         private static double _difsPs(double alpha)
@@ -790,66 +782,35 @@ namespace HydraulicResistance.ElementsOfResistance
             difsPSizeChertaRet = size / difsPDGidraulic;
             return difsPSizeChertaRet;
         }
-        private static double _difsPXTilda(double a0_, double b0_, double angleAlphaDegree, double angleBetaDegree, double x_)
+        private static double _difsFXTilda(double a0_, double b0_, double angleDegree, double x_)
         {
-            double angleAlphaRadian = angleAlphaDegree * (Math.PI / 180);
-            double angleBetaRadian = angleBetaDegree * (Math.PI / 180);
+            double xTilda = default;
+            double angleAlphaRadian = angleDegree * (Math.PI / 180);
             // развёрнутое название для пояснения
             double tanAlphaDividedBy2 = Math.Tan(angleAlphaRadian / 2);
-            double tanBetaDividedBy2 = Math.Tan(angleBetaRadian / 2);
             // краткое название для использования
             double ta = tanAlphaDividedBy2;
-            double tb = tanBetaDividedBy2;
-            double block1 = (a0_ + b0_) /
-            (
-                (4 * a0_ * Math.Tan(angleBetaRadian / 2)) -
-                (b0_ * Math.Tan(angleAlphaRadian / 2))
-            );
-            double block21 = (a0_ * tb + b0_ * ta);
-            double block22 = ta + tb;
-            double block23 = 2 * ta * tb;
-            double block2 = (block21 * block22) / block23;
-            double block31 = 2 * a0_ * ta * tb.Grade(2);
-            double block32 = a0_ * b0_ * ta * tb;
-            double block33 = 2 * b0_ * ta.Grade(2) * tb;
-            double block34 = a0_ * b0_ * ta * tb;
-            double block3 = Math.Log((block31 + block32) / (block33 + block34));
-            double block4 = (ta + tb) / (8 * ta * tb);
-            double block51 = 4 * x_ * ta * tb;
-            double block52 = 2 * x_ * (a0_ * tb + b0_ * ta);
-            double block53 = a0_ * b0_;
-            double block54 = a0_ * b0_;
-            double block5 = Math.Log((block51 + block52 + block53) / (block54));
-            double xTilda = (block1 - block2) * block3 + block4 * block5;
+            double block1 =a0_*(1-ta)+b0_;
+            double block2 =4*b0_*ta;
+            double block3 =Math.Log((a0_+2*x_*ta)/a0_);
+            double block4 =(x_*ta)/b0_;
+            xTilda = (block1 / block2) * block3 + block4;
             return xTilda;
         }
 
-        private static double _difsPDHydraulicX(double asize1cherta, double bsize1cherta, double xCherta, double alpha, double beta)
+        private static double _difsFDHydraulicX(double a0_, double b0_,double b0, double x_, double angleDegree)
         {
             /*
-            Безразмерный гидравлический диаметр диффузора
-            Пункт 40 на странице 193
+            Безразмерный гидравлический диаметр плоского диффузора
+            Пункт 41 на странице 194
             */
             double difsPDGidraulicXRet = default;
-            double A;
-            double b;
-            double x;
-            double alph;
-            double bet;
-            double ta;
-            double tb;
-            alph = alpha * (Math.PI / 180d);
-            bet = beta * (Math.PI / 180d);
-            A = asize1cherta;
-            b = bsize1cherta;
-            x = xCherta;
-            ta = Math.Tan(alph / 2d);
-            tb = Math.Tan(bet / 2d);
-            difsPDGidraulicXRet = (2d * A * b + 4d * x * (A * tb + b * ta) + 8d * Math.Pow(x, 2d) * ta * tb) / (A + b + 2d * x * (ta + tb));
+            double angleRadian = angleDegree * (Math.PI / 180d);
+            double ta = Math.Tan(angleRadian / 2d);
+            difsPDGidraulicXRet = (2*(a0_+2*x_*ta)*b0_)/(a0_+b0+2*x_*ta);
             return difsPDGidraulicXRet;
 
         }
-
 
     }
 }
