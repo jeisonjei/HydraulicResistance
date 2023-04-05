@@ -25,6 +25,10 @@ To calculate pyramidal diffuser's resistance:
 ```
 double pyramidalDiffuserResistance=DiffuserPyramidal.Resistance(...arguments...)
 ```
+To calculate flat diffuser's resistance:
+```
+double flatDiffuserResistance=DiffuserFlat.Resistance(...arguments...)
+```
 ## Confusers
 To calculate conical confuser's resistance:
 ```
@@ -50,4 +54,4 @@ var flow=new Flow(...arguments...);
 var lambda=flow.GetLambda(...arguments...);
 ```
 ## Attention
-Flat Diffusers still in development
+Calculations has not been carefully checked yet. Seems like results are close to truth, but test against results from handbook are necessary
