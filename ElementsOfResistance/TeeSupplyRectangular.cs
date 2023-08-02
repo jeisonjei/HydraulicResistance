@@ -83,21 +83,21 @@ namespace HydraulicResistance.ElementsOfResistance
             {
                 switch (areaTurnPipeSquareMeters / areaCollectorPipeSquareMeters)
                 {
-                    case <= 0.4:
+                    case var case1 when case1 <= 0.4:
                         {
                             tau = 0.4;
                             break;
                         }
-                    case > 0.4:
+                    case var case2 when case2 > 0.4:
                         {
                             switch (flowRateTurnPipeCubicMetersPerHour / flowRateCollectorPipeCubicMetersPerHour)
                             {
-                                case <= 0.5:
+                                case var case21 when case21 <= 0.5:
                                     {
                                         tau = 2 * (2 * flowRateTurnPipeCubicMetersPerHour / flowRateCollectorPipeCubicMetersPerHour - 1);
                                         break;
                                     }
-                                case > 0.5:
+                                case var case22 when case22 > 0.5:
                                     {
                                         tau = 0.3 * (2 * flowRateTurnPipeCubicMetersPerHour / flowRateCollectorPipeCubicMetersPerHour - 1);
                                         break;
@@ -130,16 +130,16 @@ namespace HydraulicResistance.ElementsOfResistance
                 Kb = 0;
                 switch (areaTurnPipeSquareMeters / areaCollectorPipeSquareMeters)
                 {
-                    case <= 0.35:
+                    case var case1 when case1 <= 0.35:
                         {
                             switch (flowRateTurnPipeCubicMetersPerHour / flowRateCollectorPipeCubicMetersPerHour)
                             {
-                                case <= 0.4:
+                                case var case11 when case11 <= 0.4:
                                     {
                                         A = 1.1 - 0.7 * flowRateTurnPipeCubicMetersPerHour / flowRateCollectorPipeCubicMetersPerHour;
                                         break;
                                     }
-                                case > 0.4:
+                                case var case12 when case12 > 0.4:
                                     {
                                         A = 0.85;
                                         break;
@@ -148,16 +148,16 @@ namespace HydraulicResistance.ElementsOfResistance
 
                             break;
                         }
-                    case > 0.35:
+                    case var case2 when case2 > 0.35:
                         {
                             switch (flowRateTurnPipeCubicMetersPerHour / flowRateCollectorPipeCubicMetersPerHour)
                             {
-                                case <= 0.6:
+                                case var case21 when case21 <= 0.6:
                                     {
                                         A = 1 - 0.6 * flowRateTurnPipeCubicMetersPerHour / flowRateCollectorPipeCubicMetersPerHour;
                                         break;
                                     }
-                                case > 0.6:
+                                case var case22 when case22 > 0.6:
                                     {
                                         A = 0.6;
                                         break;
@@ -173,19 +173,19 @@ namespace HydraulicResistance.ElementsOfResistance
                 A = 1;
                 switch (angleDegrees)
                 {
-                    case 15:
+                    case var case1 when case1==15:
                         Kb = 0.04;
                         break;
-                    case 30:
+                    case var case2 when case2== 30:
                         Kb = 0.16;
                         break;
-                    case 45:
+                    case var case3 when case3== 45:
                         Kb = 0.36;
                         break;
-                    case 60:
+                    case var case4 when case4== 60:
                         Kb = 0.64;
                         break;
-                    case 90:
+                    case var case5 when case5== 90:
                         Kb = 1;
                         break;
                     default:

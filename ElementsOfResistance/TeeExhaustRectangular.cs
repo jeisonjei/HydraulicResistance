@@ -6,7 +6,7 @@ using EngineeringUnits.Units;
 
 public class TeeExhaustRectangular
 {
-    
+
     public static double OnPassResistance(
                                                                     double flowRateCollectorPipeCubicMeterPerHour,
                                                                     double flowRateTurnPipeCubicMeterPerHour,
@@ -19,19 +19,19 @@ public class TeeExhaustRectangular
                                                                     double angleDegree)
     {
         double ksi = default;
-        var areaCollectorPipeSquareMeter =Mathematics.GetAreaRectangle(widthCollectorPipeMillimeter,heightCollectorPipeMillimeter).As(AreaUnit.SquareMeter);
-        var areaTurnPipeSquareMeter =Mathematics.GetAreaRectangle(widthTurnPipeMillimeter,heightTurnPipeMillimeter).As(AreaUnit.SquareMeter);
-        var areaPassPipeSquareMeter =Mathematics.GetAreaRectangle(widthPassPipeMillimeter,heightPassPipeMillimeter);
-                ksi = _getTeeExhaustOnPassResistance(areaCollectorPipeSquareMeter:areaCollectorPipeSquareMeter,
-                                            areaTurnPipeSquareMeter: areaTurnPipeSquareMeter,
-                                            flowRateCollectorPipeCubicMeterPerHour: flowRateCollectorPipeCubicMeterPerHour,
-                                            flowRateTurnPipeCubicMeterPerHour: flowRateTurnPipeCubicMeterPerHour,
-                                            angleDegree: angleDegree);
-        
+        var areaCollectorPipeSquareMeter = Mathematics.GetAreaRectangle(widthCollectorPipeMillimeter, heightCollectorPipeMillimeter).As(AreaUnit.SquareMeter);
+        var areaTurnPipeSquareMeter = Mathematics.GetAreaRectangle(widthTurnPipeMillimeter, heightTurnPipeMillimeter).As(AreaUnit.SquareMeter);
+        var areaPassPipeSquareMeter = Mathematics.GetAreaRectangle(widthPassPipeMillimeter, heightPassPipeMillimeter);
+        ksi = _getTeeExhaustOnPassResistance(areaCollectorPipeSquareMeter: areaCollectorPipeSquareMeter,
+                                    areaTurnPipeSquareMeter: areaTurnPipeSquareMeter,
+                                    flowRateCollectorPipeCubicMeterPerHour: flowRateCollectorPipeCubicMeterPerHour,
+                                    flowRateTurnPipeCubicMeterPerHour: flowRateTurnPipeCubicMeterPerHour,
+                                    angleDegree: angleDegree);
+
         return ksi;
     }
-    
-   
+
+
     public static double ToTurnResistance(
                                                                     double flowRateCollectorPipeCubicMeterPerHour,
                                                                     double flowRateTurnPipeCubicMeterPerHour,
@@ -44,13 +44,13 @@ public class TeeExhaustRectangular
                                                                     double angleDegree)
     {
         double ksi = default;
-        var areaCollectorPipeSquareMeter =Mathematics.GetAreaRectangle(widthCollectorPipeMillimeter,heightCollectorPipeMillimeter).As(AreaUnit.SquareMeter);
-        var areaTurnPipeSquareMeter =Mathematics.GetAreaRectangle(widthTurnPipeMillimeter,heightTurnPipeMillimeter).As(AreaUnit.SquareMeter);
-        var areaPassPipeSquareMeter =Mathematics.GetAreaRectangle(widthPassPipeMillimeter,heightPassPipeMillimeter).As(AreaUnit.SquareMeter);
-        var velocityCollectorPipeMeterPerSecond =Flow.GetFlowVelocity(flowRateCollectorPipeCubicMeterPerHour,areaCollectorPipeSquareMeter).As(SpeedUnit.MeterPerSecond);
-        var velocityTurnPipeMeterPerSecond =Flow.GetFlowVelocity(flowRateTurnPipeCubicMeterPerHour,areaTurnPipeSquareMeter).As(SpeedUnit.MeterPerSecond);
+        var areaCollectorPipeSquareMeter = Mathematics.GetAreaRectangle(widthCollectorPipeMillimeter, heightCollectorPipeMillimeter).As(AreaUnit.SquareMeter);
+        var areaTurnPipeSquareMeter = Mathematics.GetAreaRectangle(widthTurnPipeMillimeter, heightTurnPipeMillimeter).As(AreaUnit.SquareMeter);
+        var areaPassPipeSquareMeter = Mathematics.GetAreaRectangle(widthPassPipeMillimeter, heightPassPipeMillimeter).As(AreaUnit.SquareMeter);
+        var velocityCollectorPipeMeterPerSecond = Flow.GetFlowVelocity(flowRateCollectorPipeCubicMeterPerHour, areaCollectorPipeSquareMeter).As(SpeedUnit.MeterPerSecond);
+        var velocityTurnPipeMeterPerSecond = Flow.GetFlowVelocity(flowRateTurnPipeCubicMeterPerHour, areaTurnPipeSquareMeter).As(SpeedUnit.MeterPerSecond);
         double flowRatePassPipeCubicMeterPerHour = flowRateCollectorPipeCubicMeterPerHour - flowRateTurnPipeCubicMeterPerHour;
-        var velocityPassPipeMeterPerSecond =Flow.GetFlowVelocity(flowRatePassPipeCubicMeterPerHour,areaPassPipeSquareMeter).As(SpeedUnit.MeterPerSecond);
+        var velocityPassPipeMeterPerSecond = Flow.GetFlowVelocity(flowRatePassPipeCubicMeterPerHour, areaPassPipeSquareMeter).As(SpeedUnit.MeterPerSecond);
         ksi = _getTeeExhaustOnTurnResistance(velocityCollectorPipeMeterPerSecond: velocityCollectorPipeMeterPerSecond,
                                             velocityTurnPipeMeterPerSecond: velocityTurnPipeMeterPerSecond,
                                             velocityPassPipeMeterPerSecond: velocityPassPipeMeterPerSecond,
@@ -61,7 +61,7 @@ public class TeeExhaustRectangular
 
         return ksi;
     }
-    
+
     private static double _getTeeExhaustOnPassResistance(
                                                         double areaCollectorPipeSquareMeter /* площадь сечения сборного воздуховода */,
                                                         double areaTurnPipeSquareMeter /* площадь сечения бокового ответвления */,
@@ -121,23 +121,24 @@ public class TeeExhaustRectangular
 		Коэффициент A по таблице 7-1
 		 */
         double A = default;
-        switch (areaTurnPipeSquareMeter / areaCollectorPipeSquareMeter)
+        double fraction = areaTurnPipeSquareMeter / areaCollectorPipeSquareMeter;
+        switch (fraction)
         {
-            case <= 0.35:
+            case var case1 when case1 <= 0.35:
                 {
                     A = 1;
                     break;
                 }
-            case > 0.35:
+            case var case2 when case2 > 0.35:
                 {
                     switch (flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour)
                     {
-                        case <= 0.4:
+                        case var case21 when case21 <= 0.4:
                             {
                                 A = 0.9 * (1 - flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour);
                                 break;
                             }
-                        case > 0.4:
+                        case var case22 when case22 > 0.4:
                             {
                                 A = 0.55;
                                 break;
@@ -159,23 +160,24 @@ public class TeeExhaustRectangular
 		Коэффициент Kп(') из таблицы 7-3
 		 */
         double K = default;
-        switch (areaTurnPipeSquareMeter / areaCollectorPipeSquareMeter)
+        double fraction = areaTurnPipeSquareMeter / areaCollectorPipeSquareMeter;
+        switch (fraction)
         {
-            case <= 0.35:
+            case var case1 when case1 <= 0.35:
                 {
                     K = 0.8 * (flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour);
                     break;
                 }
-            case > 0.35:
+            case var case2 when case2 > 0.35:
                 {
                     switch (flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour)
                     {
-                        case <= 0.6:
+                        case var case21 when case21 <= 0.6:
                             {
                                 K = 0.5;
                                 break;
                             }
-                        case > 0.6:
+                        case var case22 when case22 > 0.6:
                             {
                                 K = 0.8 * (flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour);
                                 break;

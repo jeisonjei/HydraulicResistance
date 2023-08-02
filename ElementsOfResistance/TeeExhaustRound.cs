@@ -114,21 +114,21 @@ public class TeeExhaustRound
         double A = default;
         switch (areaTurnPipeSquareMeter / areaCollectorPipeSquareMeter)
         {
-            case <= 0.35:
+            case var case1 when case1 <= 0.35:
                 {
                     A = 1;
                     break;
                 }
-            case > 0.35:
+            case var case2 when case2 > 0.35:
                 {
                     switch (flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour)
                     {
-                        case <= 0.4:
+                        case var case21 when case21 <= 0.4:
                             {
                                 A = 0.9 * (1 - flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour);
                                 break;
                             }
-                        case > 0.4:
+                        case var case22 when case22 > 0.4:
                             {
                                 A = 0.55;
                                 break;
@@ -152,21 +152,21 @@ public class TeeExhaustRound
         double K = default;
         switch (areaTurnPipeSquareMeter / areaCollectorPipeSquareMeter)
         {
-            case <= 0.35:
+            case var case1 when case1 <= 0.35:
                 {
                     K = 0.8 * (flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour);
                     break;
                 }
-            case > 0.35:
+            case var case2 when case2 > 0.35:
                 {
                     switch (flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour)
                     {
-                        case <= 0.6:
+                        case var case21 when case21 <= 0.6:
                             {
                                 K = 0.5;
                                 break;
                             }
-                        case > 0.6:
+                        case var case22 when case22 > 0.6:
                             {
                                 K = 0.8 * (flowRateTurnPipeCubicMeterPerHour / flowRateCollectorPipeCubicMeterPerHour);
                                 break;
