@@ -42,7 +42,7 @@ namespace HydraulicResistance.ElementsOfResistance
             var xTilda=_difsXTilda(xCherta,angleDegree);
             var areaSmall=Mathematics.GetAreaCircle(diamSmallMillimeter).As(AreaUnit.SquareMeter);
             var areaBig=Mathematics.GetAreaCircle(diamBigMillimeter).As(AreaUnit.SquareMeter);
-            var flow=new Flow(fluid,flowRateCubicMeterPerHour,diamBigMillimeter);
+            var flow=new Flow(fluid,flowRateCubicMeterPerHour,diamSmallMillimeter);
             var lambda=flow.GetLambda(tempCels,equivalentRoughness);
             var re=flow.GetReinoldsNumber(tempCels);
             var n=_difsN(areaSmall,areaBig);
