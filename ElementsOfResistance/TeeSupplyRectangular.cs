@@ -120,7 +120,7 @@ namespace HydraulicResistance.ElementsOfResistance
         {
             /*
             Коэффициент сопротивления тройника приточного на поворот
-            Пункт 16 на странице 336,
+            Пункт 16 на странице 336, диаграмма 7.18 на странице 364
             Значения A и Kb - таблицы 7-4 и 7-5 соответственно
             */
             double A = default;
@@ -128,6 +128,7 @@ namespace HydraulicResistance.ElementsOfResistance
             if (areaTurnPipeSquareMeters + areaPassPipeSquareMeters > areaCollectorPipeSquareMeters && areaPassPipeSquareMeters == areaCollectorPipeSquareMeters)
             {
                 Kb = 0;
+
                 switch (areaTurnPipeSquareMeters / areaCollectorPipeSquareMeters)
                 {
                     case var case1 when case1 <= 0.35:
@@ -167,6 +168,12 @@ namespace HydraulicResistance.ElementsOfResistance
                             break;
                         }
                 }
+                // при угле поворота 90 переменной A присваивается значение 1, уже после того, как было присвоено какое-то другое значение. Страница 364 (диаграмма 7-18)
+                if (angleDegrees == 90)
+                {
+                    A = 1;
+                }
+
             }
             else if (areaTurnPipeSquareMeters + areaPassPipeSquareMeters == areaCollectorPipeSquareMeters)
             {
